@@ -1,46 +1,116 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.3",
   "info": {
     "title": "Himymo RESTful API",
-    "description": "API Spec for Himymo RESTful API",
-    "version": "1.0.0"
+    "version": "1",
+    "description": "OpenAPI for Himymo RESTful API",
+    "termsOfService": "https://www.seriusman.com",
+    "contact": {
+      "name": "Seriusman Waruwu",
+      "email": "seriusman0@gmail.com",
+      "url": "https://www.seriusman.com"
+    },
+    "license": {
+      "name": "APACHE 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api"
+      "description": "Himymo RESTful API Server",
+      "url": "https://{environment}.seriusman.com/api/v1",
+      "variables": {
+        "environment": {
+          "description": "Server Environment",
+          "default": "dev",
+          "enum": [
+            "dev",
+            "qa",
+            "prod"
+          ]
+        }
+      }
     }
   ],
+  "externalDocs": {
+    "description": "Youtube Lulus Tepat Waktu",
+    "url": "https://www.youtube.com/channel/UCzRM4RbMuOTjW1nGdkYSydg"
+  },
   "paths": {
-    "/categories": {
+    "/transaction": {
       "get": {
-        "security": [{
-          "CategoryAuth" : []
-        }],
-        "tags": [
-          "Himymo API"
+        "security": [
+          {
+            "TodolistAuth": []
+          }
         ],
-        "description": "List all Categories",
-        "summary": "List all Categories",
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Get all transaction",
+        "description": "Get all active transaction by default",
+        "parameters": [
+          {
+            "name": "include_done",
+            "in": "query",
+            "required": false,
+            "description": "Is include done transaction",
+            "schema": {
+              "type": "boolean",
+              "nullable": true,
+              "default": false
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Filter transaction by name",
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "examples": {
+              "java": {
+                "description": "Example name Java",
+                "value": "Java"
+              },
+              "php": {
+                "description": "Example name PHP",
+                "value": "PHP"
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Success get all categories",
+            "description": "Success get all transaction",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/ArrayTransaction"
+                },
+                "examples": {
+                  "success": {
+                    "description": "Example success get all transaction",
+                    "value": [
+                      {
+                        "id": "1",
+                        "name": "Tax",
+                        "value": 3,
+                        "type": "debits",
+                        "date": "2022-12-01"
+                      },
+                      {
+                        "id": "2",
+                        "name": "Gaji",
+                        "value": 4,
+                        "type": "credits",
+                        "date": "2022-12-01"
                       }
-                    }
+                    ]
                   }
                 }
               }
@@ -49,37 +119,71 @@
         }
       },
       "post": {
-        "security": [{
-          "CategoryAuth" : []
-        }],
-        "tags": ["Category API"],
-        "description": "Create new Category",
-        "summary": "Create new Category",
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Create new transaction",
+        "description": "Create new transaction to database",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateOrUpdateCategory"
+                "$ref": "#/components/schemas/CreateOrUpdateTransaction"
+              },
+              "examples": {
+                "java": {
+                  "description": "Example create transaction Java",
+                  "value": {
+                    "name": "Java",
+                    "value": 3,
+                    "type" : "debits",
+                    "date" : "2022-12-01"
+                  }
+                },
+                "php": {
+                  "description": "Example create transaction PHP",
+                  "value": {
+                    "name": "PHP",
+                    "value": 2,
+                    "type" : "credits",
+                    "date" : "2022-12-01"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success Create Category",
+            "description": "Success create transaction",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code" : {
-                      "type": "number"
-                    },
-                    "status" : {
-                      "type": "string"
-                    },
-                    "data" : {
-                      "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/Transaction"
+                },
+                "examples": {
+                  "java": {
+                    "description": "Success create java transaction",
+                    "value": {
+                      "name": "Java",
+                      "value": 3,
+                      "type" : "debits",
+                      "date" : "2022-12-01"
+                    }
+                  },
+                  "php": {
+                    "description": "Success create php todolist",
+                    "value": {
+                      "name": "PHP",
+                      "value": 2,
+                      "type" : "credits",
+                      "date" : "2022-12-01"
                     }
                   }
                 }
@@ -89,84 +193,78 @@
         }
       }
     },
-    "/categories/{categoryId}" : {
-      "get" : {
-        "security": [{
-          "CategoryAuth" : []
-        }],
-        "tags": ["Category API"],
-        "summary": "Get category by Id",
-        "description": "Get category by id",
-        "parameters": [
+    "/transaction/{transactionId}": {
+      "put": {
+        "security": [
           {
-            "name": "categoryId",
-            "in": "path",
-            "description": "Category Id"
+            "TransactionAuth": []
           }
         ],
-        "responses": {
-          "200" : {
-            "description": "Success get category",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code" : {
-                      "type": "number"
-                    },
-                    "status" : {
-                      "type": "string"
-                    },
-                    "data" : {
-                      "$ref": "#/components/schemas/Category"
-                    }
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Update existing transaction",
+        "description": "Update existing transaction in database",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TransactionId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateTransaction"
+              },
+              "examples": {
+                "java": {
+                  "description": "Example create transaction Java",
+                  "value": {
+                    "name": "Java",
+                    "value": 1,
+                    "type" : "credits",
+                    "date" : "2022-12-01"
+                  }
+                },
+                "php": {
+                  "description": "Example create todolist PHP",
+                  "value": {
+                    "name": "PHP",
+                    "value": 2,
+                    "type" : "credits",
+                    "date" : "2022-12-01"
                   }
                 }
               }
             }
           }
-        }
-      },
-      "put" : {
-        "security": [{
-          "CategoryAuth" : []
-        }],
-        "tags": ["Category API"],
-        "summary": "Update category by Id",
-        "description": "Update category by Id",
-        "parameters": [
-          {
-            "name": "categoryId",
-            "in": "path",
-            "description": "Category Id"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrUpdateCategory"
-              }
-            }
-          }
         },
         "responses": {
-          "200" : {
-            "description": "Success get category",
+          "200": {
+            "description": "Success update todolist",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code" : {
-                      "type": "number"
-                    },
-                    "status" : {
-                      "type": "string"
-                    },
-                    "data" : {
-                      "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/Transaction"
+                },
+                "examples": {
+                  "java": {
+                    "description": "Success create java transaction",
+                    "value": {
+                      "name": "Java",
+                      "value": 1,
+                      "type" : "credits",
+                      "date" : "2022-12-01"
+                    }
+                  },
+                  "php": {
+                    "description": "Success create php transaction",
+                    "value": {
+                      "name": "PHP",
+                      "value": 2,
+                      "type" : "credits",
+                      "date" : "2022-12-01"
                     }
                   }
                 }
@@ -176,32 +274,62 @@
         }
       },
       "delete": {
-        "security": [{
-          "CategoryAuth" : []
-        }],
-        "tags": ["Category API"],
-        "summary": "Delete category by Id",
-        "description": "Delete category by id",
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "Delete existing transaction",
+        "description": "Delete existing transaction in database",
         "parameters": [
           {
-            "name": "categoryId",
-            "in": "path",
-            "description": "Category Id"
+            "$ref": "#/components/parameters/TransactionId"
           }
         ],
         "responses": {
-          "200" : {
-            "description": "Success delete category",
+          "200": {
+            "description": "Success delete transaction",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "code" : {
-                      "type": "number"
-                    },
-                    "status" : {
-                      "type": "string"
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Success delete transaction",
+                    "value": {
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Failed delete not found transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete transaction",
+                    "value": {
+                      "success": false
                     }
                   }
                 }
@@ -214,31 +342,102 @@
   },
   "components": {
     "securitySchemes": {
-      "CategoryAuth" : {
+      "TransactionAuth": {
+        "description": "Authentication for Transaction RESTful API",
         "type": "apiKey",
-        "in" : "header",
-        "name": "X-API-Key",
-        "description": "Authentication for Category API"
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "parameters": {
+      "TransactionId": {
+        "name": "transactiontId",
+        "in": "path",
+        "required": true,
+        "description": "Transaction id for updated",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "examples": {
+          "java": {
+            "description": "Sample transaction id for Java",
+            "value": "1"
+          },
+          "php": {
+            "description": "Sample transaction id for PHP",
+            "value": "2"
+          }
+        }
       }
     },
     "schemas": {
-      "CreateOrUpdateCategory" : {
+      "Transaction": {
         "type": "object",
         "properties": {
+          "id": {
+            "description": "transaction id",
+            "type": "string"
+          },
           "name": {
+            "description": "transaction name",
+            "type": "string"
+          },
+          "value": {
+            "description": "transaction value",
+            "type": "number",
+            "format": "int32"
+          },
+          "type": {
+            "description": "transaction type",
+            "type": "string",
+            "enum": [
+              "debits",
+              "credits"
+            ]
+          },
+          "date": {
+            "description": "transaction date",
             "type": "string"
           }
         }
       },
-      "Category" : {
+      "CreateOrUpdateTransaction": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "number"
-          },
           "name": {
+            "description": "transaction name",
+            "type": "string",
+            "required": true
+          },
+          "value": {
+            "description": "transaction value",
+            "type": "number",
+            "format": "int32",
+            "required": true
+          },
+          "type": {
+            "description": "transaction type",
+            "type": "string",
+            "required": true,
+            "default" : "debits",
+            "enum": [
+              "debits",
+              "credits"
+            ]
+          },
+          "date": {
+            "description": "transaction date",
+            "required": false,
             "type": "string"
           }
+        }
+      },
+      "ArrayTransaction": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Transaction"
         }
       }
     }
