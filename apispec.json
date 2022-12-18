@@ -41,7 +41,7 @@
       "get": {
         "security": [
           {
-            "TodolistAuth": []
+            "TransactionAuth": []
           }
         ],
         "tags": [
@@ -121,7 +121,7 @@
       "post": {
         "security": [
           {
-            "TodolistAuth": []
+            "TransactionAuth": []
           }
         ],
         "tags": [
@@ -178,7 +178,7 @@
                     }
                   },
                   "php": {
-                    "description": "Success create php todolist",
+                    "description": "Success create php transaction",
                     "value": {
                       "name": "PHP",
                       "value": 2,
@@ -228,7 +228,7 @@
                   }
                 },
                 "php": {
-                  "description": "Example create todolist PHP",
+                  "description": "Example create transaction PHP",
                   "value": {
                     "name": "PHP",
                     "value": 2,
@@ -242,7 +242,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success update todolist",
+            "description": "Success update transaction",
             "content": {
               "application/json": {
                 "schema": {
@@ -276,7 +276,7 @@
       "delete": {
         "security": [
           {
-            "TodolistAuth": []
+            "TransactionAuth": []
           }
         ],
         "tags": [
@@ -408,19 +408,16 @@
         "properties": {
           "name": {
             "description": "transaction name",
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "value": {
             "description": "transaction value",
             "type": "number",
-            "format": "int32",
-            "required": true
+            "format": "int32"
           },
           "type": {
             "description": "transaction type",
             "type": "string",
-            "required": true,
             "default" : "debits",
             "enum": [
               "debits",
@@ -429,7 +426,6 @@
           },
           "date": {
             "description": "transaction date",
-            "required": false,
             "type": "string"
           }
         }
