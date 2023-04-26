@@ -1,0 +1,38 @@
+POST /v1/transactions HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "name": "Pembelian Buku2",
+    "type": 0,
+    "value": 50000,
+    "date": "2023-04-26T09:00:00Z"
+}
+
+###
+GET /v1/transactions HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+###
+GET /v1/transactions/3 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+
+###
+PUT /v1/transactions/2 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "name": "Updated Transaksi 2",
+  "type": 0,
+  "value": 10,
+  "date": "2022-05-01T00:00:00Z"
+}
+
+###
+DELETE  /v1/transactions/2 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
